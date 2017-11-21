@@ -16,7 +16,7 @@ module Emilio
       else
         ic = Iconv.new('utf-8', email.charset)
         email
-      end.body.to_s.encode("utf-8")
+      end.body.to_s.force_encoding("utf-8")
 
       @subject = email.subject.encode
       Emilio.logger.info("Parsed email [#{@subject}] from [#{@sender}]")
