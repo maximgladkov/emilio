@@ -23,6 +23,14 @@ module Emilio
 
       parse
     end
+  
+    def move?
+      true
+    end
+  
+    def delete?
+      false
+    end
 
   protected
     def parse
