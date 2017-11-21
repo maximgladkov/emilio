@@ -19,21 +19,22 @@ module Emilio
         imap.uid_search(["NOT", "DELETED"]).each do |uid|
           # fetches the straight up source of the email for tmail to parse
           source = imap.uid_fetch(uid, ['RFC822']).first.attr['RFC822']
-
-          Emilio.logger.info imap.uid_fetch(uid, ['RFC822']).first
           
-          Emilio.parser.classify.constantize.receive(source)
+          result = Emilio.parser.classify.constantize.receive(source)
 
-          # Optionally assign it some label
-          imap.uid_copy(uid, Emilio.mailbox)
-          imap.uid_copy(uid, Emilio.add_label)
-
-          # Delete it from Inbox (Gmail Archive)
-          # imap.uid_store(uid, "+FLAGS", [:Deleted])
+          if result.move?
+            # Optionally assign it some label
+            imap.uid_copy(uid, Emilio.add_label)
+          end
+            
+          if result.delete?
+            # Delete it from Inbox (Gmail Archive)
+            imap.uid_store(uid, "+FLAGS", [:Deleted])
+          end
         end
 
         # expunge removes the deleted emails
-        # imap.expunge
+        imap.expunge
         imap.logout
         imap.disconnect
 
