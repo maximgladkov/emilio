@@ -16,7 +16,7 @@ module Emilio
         imap.select(Emilio.mailbox)
 
         # get all emails in that mailbox that have not been deleted
-        imap.uid_search(["NOT", "DELETED"]).each do |uid|
+        imap.uid_search(["NOT", "DELETED", "AND", "NOT", "X-GM-LABELS", "'#{ Emilio.add_label }'"]).each do |uid|
           # fetches the straight up source of the email for tmail to parse
           source = imap.uid_fetch(uid, ['RFC822']).first.attr['RFC822']
 
@@ -26,7 +26,7 @@ module Emilio
           imap.uid_copy(uid, Emilio.add_label) if Emilio.add_label
 
           # Delete it from Inbox (Gmail Archive)
-          imap.uid_store(uid, "+FLAGS", [:Deleted])
+          # imap.uid_store(uid, "+FLAGS", [:Deleted])
         end
 
         # expunge removes the deleted emails
