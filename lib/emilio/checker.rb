@@ -9,7 +9,7 @@ module Emilio
 
       begin
         # make a connection to imap account
-        imap = Net::IMAP.new(Emilio.host, Emilio.port, true)
+        imap = Net::IMAP.new(Emilio.host, Emilio.port, true, nil, false)
         imap.login(Emilio.username, Emilio.password)
 
         # select which mailbox to process
