@@ -21,7 +21,13 @@ module Emilio
       @subject = email.subject.encode
       Emilio.logger.info("Parsed email [#{@subject}] from [#{@sender}]")
 
-      parse
+      @parsed = parse
+    
+      self
+    end
+    
+    def parsed?
+      !!@parsed
     end
   
     def move?
